@@ -29,6 +29,7 @@ class View
         $viewContent = ob_get_clean();
         $layout = file_get_contents($this->web->path('views/layout.view.php'));
 
+        // Parse out the title
         $titleMatch = [];
         $pageTitle = "Untitled";
 
@@ -40,6 +41,8 @@ class View
         $finalContent = $layout;
         $finalContent = str_replace("%%TITLE%%", $pageTitle, $finalContent);
         $finalContent = str_replace("%%CONTENT%%", $viewContent, $finalContent);
+        $finalContent = str_replace("%%PRODUCT_NAME%%", "connectord/base", $finalContent);
+        $finalContent = str_replace($titleMatch[0], "", $finalContent);
         $finalContent = str_replace($titleMatch[0], "", $finalContent);
 
         echo $finalContent;

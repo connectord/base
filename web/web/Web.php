@@ -15,7 +15,11 @@ class Web
     {
         // First, declare all the routes we want
         $this->routes->get('/', function () {
-            echo $this->view->render('index');
+            $this->view->render('index');
+        });
+
+        $this->routes->get('/status', function () {
+            echo json_encode(['status' => 'ok', 'time' => date("Y-m-d H:i:s")]);
         });
 
         // TODO: Set up anything else we need to know

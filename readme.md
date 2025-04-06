@@ -18,3 +18,8 @@ styling all the way.
 
 Run `docker-compose -f dev.yaml up -d` to build the regular container, then mount the web and worker paths to it so that
 changes are picked up in reatime. By default, the dev environment will open at http://localhost:50000 per the port bind.
+
+# TODO: 
+* Continue on web/js/web.js - build a light web frontend container for basic realtime
+* First objective: Return the status of the containter itself
+* Next objective: Test out SSE and see about long-running comms between the server thread and the frontend
