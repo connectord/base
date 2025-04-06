@@ -11,10 +11,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      
-    - name: Make test script executable
-      run: chmod +x ./test
-      
-    - name: Run tests
-      run: ./test
+      - uses: actions/checkout@v4
+
+      # After checking out the code, build the container and run the test suite against it
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.10.0
+
+      # Build the container
+      - name: Build Docker image
+        run: |
+          docker build -t connectord-base-test:test .
+
+      # Run the container on a dedicated testing port
+      - name: Run test container
+        run: |
+          container_id=$(docker run -d -p 50450:80 connectord-base-test:test)
+          echo "container_id=$container_id" >> $GITHUB_ENV
+
+      # Give the container a chance to start
+      # TODO: Rather wait for a health state on a loop
+      - name: Wait for container
+        run: sleep 2
+
+      # Run all the tests
+      - name: Run Tests
+        run: php ./tests/Base.php
+
+      # Cleanup
+      - name: Cleanup
+        if: always() # Even if the above fails
+        run: |
+          docker stop ${{ env.container_id }}
+          docker rm ${{ env.container_id }}
+          docker rmi connectord-base-test:test
+          
