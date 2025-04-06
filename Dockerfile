@@ -1,30 +1,25 @@
 FROM alpine:3.21
 
+LABEL maintainer="wogan@outlook.com"
+LABEL version="0.1"
+LABEL org.opencontainers.image.description="Base image for connectord system"
+
 # Latest versions as of 2025-04-06
 ENV NGINX_VERSION=1.26.3
-ENV PHP_VERSION=8.3
-ENV ALPINE_PHP=83
+ENV PHP_VERSION=8.4
+ENV ALPINE_PHP=84
 
 # Install packages
 RUN apk add --no-cache \
     php${ALPINE_PHP} \
     php${ALPINE_PHP}-fpm \
-    # php${PHP_VERSION}-opcache \
-    # php${PHP_VERSION}-pdo \
-    # php${PHP_VERSION}-pdo_mysql \
-    # php${PHP_VERSION}-mysqli \
-    # php${PHP_VERSION}-json \
-    # php${PHP_VERSION}-openssl \
-    # php${PHP_VERSION}-curl \
-    # php${PHP_VERSION}-zlib \
-    # php${PHP_VERSION}-xml \
-    # php${PHP_VERSION}-mbstring \
-    # php${PHP_VERSION}-session \
-    # php${PHP_VERSION}-tokenizer \
-    # php${PHP_VERSION}-fileinfo \
-    # curl \
+    php${ALPINE_PHP}-pcntl \
+    php${ALPINE_PHP}-curl \
     nginx \
-    supervisor
+    supervisor 
+
+# We need a non-root user
+RUN adduser -D -s /sbin/nologin connectord
 
 # Set up packages
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -33,11 +28,23 @@ COPY php.ini /etc/php${PHP_VERSION}/php.ini
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create directory structure
-RUN mkdir -p /connectord/{web,worker,log} \
-    mkdir -p /connectord/log/{web,app,job} \
+RUN mkdir -p /connectord/ \
+    && mkdir -p /connectord/web \
+    && mkdir -p /connectord/worker \
+    && mkdir -p /connectord/log \
+    && mkdir -p /var/lib/nginx/tmp \
+    && mkdir -p /var/lib/nginx/logs \
+    && mkdir -p /var/log/php84 \
     && mkdir -p /run/nginx \
-    && mkdir -p /run/php \
-    && mkdir -p /var/log/php-fpm
+    && mkdir -p /run/php 
+
+# Adjust permissions within the container
+RUN chown -R connectord:connectord /connectord \
+    && chown -R connectord:connectord /var/log/php84 \
+    && chown -R connectord:connectord /var/lib/nginx \
+    && chmod -R 0777 /run/nginx \
+    && chmod -R 0777 /var/lib/nginx \
+    && chmod -R 0777 /var/lib/nginx/logs
 
 # Install the connectord system
 COPY worker/main.php /connectord/worker/main.php
