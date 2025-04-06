@@ -1,0 +1,10 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./web:/connectord/web
+      - ./worker:/connectord/worker
+    ports:
+      - "50000:80"

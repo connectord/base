@@ -13,3 +13,8 @@ handles its own logic when executing in various modes, writes its own logs, etc.
 
 To keep things lightweight, we won't have a complicated frontend build system - simple static scripts with minimal
 styling all the way.
+
+# Development
+
+Run `docker-compose -f dev.yaml up -d` to build the regular container, then mount the web and worker paths to it so that
+changes are picked up in reatime. By default, the dev environment will open at http://localhost:50000 per the port bind.
