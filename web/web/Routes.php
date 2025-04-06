@@ -5,6 +5,11 @@ class Routes
 
     private $routes = [];
 
+    public function __construct(private Web $web)
+    {
+
+    }
+
     public function handle(): void
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '/';

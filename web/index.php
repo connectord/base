@@ -6,7 +6,7 @@ require_once __DIR__ . '/classmap.php';
 // And handle the incoming request
 try
 {
-    (new Web())->handle();    
+    (new Web(__DIR__))->handle();
 }
 catch(Exception $ex)
 {
