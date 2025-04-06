@@ -4,6 +4,8 @@ LABEL maintainer="wogan@outlook.com"
 LABEL version="0.1"
 LABEL org.opencontainers.image.description="Base image for connectord system"
 
+ARG BUILD_INFO
+
 # Latest versions as of 2025-04-06
 ENV NGINX_VERSION=1.26.3
 ENV PHP_VERSION=8.4
@@ -52,6 +54,9 @@ COPY web/index.php /connectord/web/index.php
 
 # Set working directory
 WORKDIR /connectord/web
+
+# Store build info for later use
+RUN echo "$BUILD_INFO" > /connectord/web/build
 
 # Expose port
 EXPOSE 80

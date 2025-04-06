@@ -53,6 +53,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_INFO=Build: ${{ github.run_id }}, Commit: ${{ github.sha }}, Tags: ${{ steps.meta.outputs.tags }}, Labels: ${{ steps.meta.outputs.labels }}
 
       - name: Sign the published Docker image
         env:
