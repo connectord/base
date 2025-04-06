@@ -31,7 +31,7 @@ jobs:
       # Give the container a chance to start
       # TODO: Rather wait for a health state on a loop
       - name: Wait for container
-        run: sleep 2
+        run: sleep 5
 
       # Run all the tests
       - name: Run Tests
